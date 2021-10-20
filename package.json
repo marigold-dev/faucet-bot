@@ -1,0 +1,12 @@
+{
+  "name": "tezos-faucet-bot",
+  "version": "1.0.0",
+  "description": "Automated faucet for Tezos funds",
+  "main": "index.js",
+  "repository": "https://github.com/marigold/faucet-bot",
+  "author": "Daniel Hines <d4hines@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@taquito/taquito": "^10.2.1"
+  }
+}
