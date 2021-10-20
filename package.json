@@ -1,12 +1,24 @@
 {
-  "name": "tezos-faucet-bot",
+  "name": "faucet-bot",
   "version": "1.0.0",
-  "description": "Automated faucet for Tezos funds",
-  "main": "index.js",
-  "repository": "https://github.com/marigold/faucet-bot",
-  "author": "Daniel Hines <d4hines@gmail.com>",
+  "description": "Automated money hand-outs for Tezos",
+  "scripts": {
+    "start": "ts-node ./index.ts"
+  },
+  "authors": [
+    "Daniel Hines",
+    "Andre Popovitch"
+  ],
   "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.17.13"
+  },
   "dependencies": {
-    "@taquito/taquito": "^10.2.1"
+    "@taquito/signer": "^10.2.1",
+    "@taquito/taquito": "^10.2.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
   }
 }
