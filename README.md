@@ -28,3 +28,14 @@ The app uses the following environmental variables:
   [Taquito docs](https://github.com/ecadlabs/taquito)
 - `TEZOS_SECRET_KEY` - a EDSK key representing a Tezos address on the test network.
 - `PORT` - the port to listen on. Defaults to 3000
+
+Additionally, you can build and run with Docker like so:
+```
+docker build . -t faucet-bot
+docker run --name faucet-bot \
+  --restart always \
+  -p 3000:3000
+  -e TEZOS_SECRET_KEY \
+  -e TEZOS_RPC_URL \
+  faucet-bot
+```
