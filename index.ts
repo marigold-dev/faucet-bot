@@ -26,7 +26,7 @@ app.get("/getmoney/:address", async (req, res) => {
   const { address } = req.params;
 
   // Send an arbitrary amount
-  const amount = 2;
+  const amount = 10;
 
   console.log(`Transfering ${amount} ꜩ to ${address}...`);
 
