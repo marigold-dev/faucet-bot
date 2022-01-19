@@ -22,6 +22,13 @@ Tezos.setProvider({
 
 const app = express();
 
+
+// Health Check endpoint
+app.get("health", async (_, res) => {
+  res.send("Service is up and running.\n");
+})
+
+// Get Money by address endpoint
 app.get("/getmoney/:address", async (req, res) => {
   const { address } = req.params;
 
