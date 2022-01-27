@@ -30,8 +30,8 @@ jobs:
           platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Only push if on main branch
-          push: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+          # Only push if on master branch
+          push: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
           tags: |
             ghcr.io/marigold-dev/faucet-bot:latest
             ghcr.io/marigold-dev/faucet-bot:${{ github.sha }}
