@@ -43,7 +43,7 @@ app.get("/getmoney/:address", async (req, res) => {
     await op.confirmation(1);
     console.log(`Confirmed - ${op.hash}`);
     res.send(
-      `Funds transferred. Check url for results: https://granada.tzstats.com/${op.hash}\n`
+      `Funds transferred. Check url for results: https://hangzhou.tzstats.com/${op.hash}\n`
     );
   } catch (error) {
     console.error((error as any).message);
