@@ -24,7 +24,7 @@ const app = express();
 
 
 // Health Check endpoint
-app.get("health", async (_, res) => {
+app.get("/health", async (_, res) => {
   res.send("Service is up and running.\n");
 })
 
