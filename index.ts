@@ -14,10 +14,12 @@ const PORT = process.env.PORT ?? 3000;
 // available ones at https://tezostaquito.io/docs/rpc_nodes#list-of-community-run-nodes
 const Tezos = new TezosToolkit(TEZOS_RPC_URL);
 
+const signer = new InMemorySigner(TEZOS_SECRET_KEY)
+
 Tezos.setProvider({
   // InMemorySigner is not production-worthy, see Taquito docs
   // but this is just test-net funds. YOLO
-  signer: new InMemorySigner(TEZOS_SECRET_KEY),
+  signer: signer,
 });
 
 const app = express();
@@ -27,6 +29,23 @@ const app = express();
 app.get("/health", async (_, res) => {
   res.send("Service is up and running.\n");
 })
+
+// Status Address and Balance
+app.get("/status", async (_, res) => {
+  try {
+    const address = await signer.publicKeyHash();
+    const result = {
+      address: address,
+      balance: await Tezos.tz.getBalance(address),
+    }
+
+    console.log(`Address: ${result.address} - Balance: ${result.balance}`);
+    res.send(result);
+  } catch (error) {
+    console.error((error as any).message);
+    res.status(500).send(JSON.stringify(error, null, 2));
+  }
+});
 
 // Get Money by address endpoint
 app.get("/getmoney/:address", async (req, res) => {
