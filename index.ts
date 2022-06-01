@@ -3,12 +3,15 @@ import { TezosToolkit } from "@taquito/taquito";
 import { InMemorySigner } from "@taquito/signer";
 import { config } from "dotenv";
 import fs from 'fs';
+import cors from "cors";
 
 type Config = {
   secretKey: string,
   rpcUrl: string,
   network: string,
 }
+
+const knownAddresses : Set<string> = new Set<string>();
 
 // Set's up our environment variables from the file .env
 config();
@@ -33,6 +36,7 @@ const contents = fs.readFileSync(KEY_FILE, 'utf-8')
 const TEZOS_CONFIG = JSON.parse(contents) as Config[];
 
 const app = express();
+app.use((req, res, next) => { next(); }, cors({maxAge: 84600}));
 
 TEZOS_CONFIG.forEach(config => {
   // Status Address and Balance
@@ -57,6 +61,12 @@ TEZOS_CONFIG.forEach(config => {
     const tezos = createTezosToolkit(config);
     const { address } = req.params;
 
+    //check if user not in memory list
+    if(knownAddresses.has(address)) {
+      res.status(500).send("User "+address+" has already claimed 10TZ");
+    return;
+    }
+
     // Send an arbitrary amount
     const amount = 10;
 
@@ -66,6 +76,7 @@ TEZOS_CONFIG.forEach(config => {
       const op = await tezos.contract.transfer({ to: address, amount: amount });
       console.log(`Waiting for ${op.hash} to be confirmed...`);
       await op.confirmation(1);
+      knownAddresses.add(address); 
       console.log(`Confirmed - ${op.hash}`);
       res.send(
         `Funds transferred. Check url for results: https://${config.network}.tzstats.com/${op.hash}\n`

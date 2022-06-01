@@ -34,8 +34,6 @@ Additionally, you can build and run with Docker like so:
 docker build . -t faucet-bot
 docker run --name faucet-bot \
   --restart always \
-  -p 3000:3000
-  -e TEZOS_SECRET_KEY \
-  -e TEZOS_RPC_URL \
+  -p 3000:3000 \
   faucet-bot
 ```
