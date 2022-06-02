@@ -11,7 +11,7 @@ type Config = {
   network: string,
 }
 
-const knownAddresses : Set<string> = new Set<string>();
+const knownAddresses: Set<string> = new Set<string>();
 
 // Set's up our environment variables from the file .env
 config();
@@ -36,11 +36,12 @@ const contents = fs.readFileSync(KEY_FILE, 'utf-8')
 const TEZOS_CONFIG = JSON.parse(contents) as Config[];
 
 const app = express();
-app.use((req, res, next) => { next(); }, cors({maxAge: 84600}));
+app.use((req, res, next) => { next(); }, cors({ maxAge: 84600 }));
 
-TEZOS_CONFIG.forEach(config => {
+
+const createNetworkEndpoint = (app: express.Express, config: Config, network: string) => {
   // Status Address and Balance
-  app.get(`/${config.network}/status`, async (_, res) => {
+  app.get(`/${network}/status`, async (_, res) => {
     try {
       const tezos = createTezosToolkit(config);
       const address = await tezos.signer.publicKeyHash();
@@ -57,14 +58,14 @@ TEZOS_CONFIG.forEach(config => {
   });
 
   // Get Money by address endpoint
-  app.get(`/${config.network}/getmoney/:address`, async (req, res) => {
+  app.get(`/${network}/getmoney/:address`, async (req, res) => {
     const tezos = createTezosToolkit(config);
     const { address } = req.params;
 
     //check if user not in memory list
-    if(knownAddresses.has(address)) {
-      res.status(500).send("User "+address+" has already claimed 10TZ");
-    return;
+    if (knownAddresses.has(address)) {
+      res.status(500).send("User " + address + " has already claimed 10TZ");
+      return;
     }
 
     // Send an arbitrary amount
@@ -76,7 +77,7 @@ TEZOS_CONFIG.forEach(config => {
       const op = await tezos.contract.transfer({ to: address, amount: amount });
       console.log(`Waiting for ${op.hash} to be confirmed...`);
       await op.confirmation(1);
-      knownAddresses.add(address); 
+      knownAddresses.add(address);
       console.log(`Confirmed - ${op.hash}`);
       res.send(
         `Funds transferred. Check url for results: https://${config.network}.tzstats.com/${op.hash}\n`
@@ -86,6 +87,11 @@ TEZOS_CONFIG.forEach(config => {
       res.status(500).send(JSON.stringify(error, null, 2));
     }
   });
+}
+
+TEZOS_CONFIG.forEach(config => {
+  createNetworkEndpoint(app, config, config.network);
+  createNetworkEndpoint(app, config, config.network + "net");
 })
 
 // Health Check endpoint
